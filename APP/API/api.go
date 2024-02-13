@@ -1,13 +1,14 @@
 package main
 
 import (
+	apicall "canopyCore/APP/APICall"
 	"canopyCore/modules"
 	"context"
 	"database/sql"
 	"fmt"
 	"runtime"
 	"time"
-	
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 	_ "github.com/lib/pq"
@@ -87,7 +88,6 @@ func main() {
 	errRedis := rc.Ping(cx).Err()
 	if errRedis != nil {
 		modules.Logging(modules.Resource(), "STARTING UP", "START SERVICE", "SERVER IP", "Redis unconnected", errRedis)
-
 		panic(errRedis)
 	} else {
 		modules.Logging(modules.Resource(), "STARTING UP", "START SERVICE", "SERVER IP", "Redis connected", nil)
@@ -99,6 +99,9 @@ func main() {
 			"message": "pong",
 		})
 	})
+
+	r.GET("/login/google", apicall.GoogleLogin)
+	r.GET("/login/google/callback", apicall.GoogleLoginCallback)
 
 	modules.Logging(modules.Resource(), "STARTING UP", "START SERVICE", "SERVER IP", "Starting up API on port " + THEPORT, nil)
 	err := r.Run(":" + THEPORT)

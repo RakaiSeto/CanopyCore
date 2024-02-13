@@ -2,6 +2,7 @@ package modules
 
 import (
 	"bytes"
+	helper "canopyCore/APP/Helper"
 	"context"
 	"crypto/md5"
 	"crypto/sha1"
@@ -12,15 +13,19 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"go.mongodb.org/mongo-driver/mongo"
-	"google.golang.org/grpc/peer"
 	"math/rand"
 	"net/http"
+	"os"
 	"regexp"
 	"runtime"
 	"strconv"
 	"strings"
 	"time"
+
+	"go.mongodb.org/mongo-driver/mongo"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
+	"google.golang.org/grpc/peer"
 
 	"github.com/gomodule/redigo/redis"
 	guuid "github.com/google/uuid"
@@ -159,6 +164,19 @@ func InitiateGlobalVariables() {
 	MapConfig = LoadConfig()
 	zapLogger = initiateZapLogger()
 	RedisPooler = RedisInitiateRedisPool()
+	initiateOauthHandler()
+}
+
+func initiateOauthHandler() {
+	helper.GoogleOauthLogin = &oauth2.Config{
+		RedirectURL: "https://apicanopy.rakaiseto.com/login/google/callback",
+		ClientID: os.Getenv("GOOGLE_CLIENT_ID"),
+		ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
+		Scopes: []string{"https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"},
+		Endpoint: google.Endpoint,
+	}
+	fmt.Println(os.Getenv("GOOGLE_CLIENT_ID"))
+	fmt.Println(os.Getenv("GOOGLE_CLIENT_SECRET"))
 }
 
 func SyslogTimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
