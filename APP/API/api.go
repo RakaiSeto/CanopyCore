@@ -7,7 +7,8 @@ import (
 	"fmt"
 	"runtime"
 	"time"
-
+	
+	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 	_ "github.com/lib/pq"
 	"github.com/streadway/amqp"
@@ -18,6 +19,8 @@ var rc *redis.Client
 var cx context.Context
 var connRabbit *amqp.Connection
 var chIncoming *amqp.Channel
+
+const THEPORT = "10000"
 
 func main() {
 	// Load configuration file
@@ -88,5 +91,18 @@ func main() {
 		panic(errRedis)
 	} else {
 		modules.Logging(modules.Resource(), "STARTING UP", "START SERVICE", "SERVER IP", "Redis connected", nil)
+	}
+
+	r := gin.Default()
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "pong",
+		})
+	})
+
+	modules.Logging(modules.Resource(), "STARTING UP", "START SERVICE", "SERVER IP", "Starting up API on port " + THEPORT, nil)
+	err := r.Run(":" + THEPORT)
+	if err != nil {
+		panic(err)
 	}
 }

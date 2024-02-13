@@ -62,11 +62,4 @@ const (
 	ConstDefaultSaltEncryption = "_Semoga_Semua_Mahluk_Berbahagia_"
 
 	ConstJwtSecret = "jwtsecret"
-	ConstGoogleClientID = "987110481594-ioo9fr0uj5p3jl9gps5ejb9t610ksn0i.apps.googleusercontent.com"
-	ConstGoogleClientSecret = "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"
-	ConstArtamayaOAuthURL = "http://token.krapoex.com:9091/token"
-	ConstArtamayaUserName = "4kunHTTP"
-	ConstArtamayaPassword = "HjuLcjwG"
-	ConstArtamayaClientId = "AK20230816090951"
-	ConstArtamayaSMSURL = "http://send.krapoex.com:9091/api"
 )
