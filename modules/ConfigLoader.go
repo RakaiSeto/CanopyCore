@@ -14,9 +14,10 @@ func LoadConfig() map[string]string {
 	ctx := context.Background()
 	mapConfig := make(map[string]string)
 
+	// errEnv := godotenv.Load("./../../.env")
 	errEnv := godotenv.Load("/canopy/app/.env")
 	if errEnv != nil {
-		panic("Error loading .env file")
+		panic(errEnv)
 	}
 
 	cl := initVaultClient()

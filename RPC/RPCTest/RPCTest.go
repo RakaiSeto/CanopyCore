@@ -1,19 +1,27 @@
 package main
 
 import (
-	apicall "canopyCore/APP/APICall"
-	error_code "canopyCore/errors"
 	"canopyCore/modules"
 	"context"
 	"database/sql"
 	"fmt"
+	"net"
 	"runtime"
 	"time"
 
-	"github.com/gin-gonic/gin"
+	test "canopyCore/grpc/test"
+
+	"log"
+
 	"github.com/go-redis/redis/v8"
 	_ "github.com/lib/pq"
 	"github.com/streadway/amqp"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
+	"github.com/grpc-ecosystem/go-grpc-middleware"
+	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 )
 
 var db *sql.DB
@@ -21,8 +29,22 @@ var rc *redis.Client
 var cx context.Context
 var connRabbit *amqp.Connection
 var chIncoming *amqp.Channel
+var srv *grpc.Server
 
-const THEPORT = "10000"
+const THEPORT = "20000"
+
+type TestServer struct{
+	test.HelloWorldServiceServer
+}
+
+var testServer TestServer
+
+func (testServer TestServer) DoHelloWorld(ctx context.Context, request *test.EmptyRequest) (*test.HelloWorldResponse, error) {
+	localResponse := new(test.HelloWorldResponse)
+	localResponse.Hello = "This Message is from GRPC"
+
+	return localResponse, nil
+}
 
 func main() {
 	// Load configuration file
@@ -94,34 +116,33 @@ func main() {
 		modules.Logging(modules.Resource(), "STARTING UP", "START SERVICE", "SERVER IP", "Redis connected", nil)
 	}
 
-	r := gin.Default()
-	r.GET("/", func(ctx *gin.Context) {
-		incTraceCode := modules.GenerateUUID()
-		incClientIP := ctx.ClientIP()
-		codeStatus := ""
-		codeDescription := ""
-
-		codeStatus = error_code.ErrorSuccess
-		theDescription, err := error_code.GetErrorStatus(db, codeStatus)
-		if err != nil {
-			modules.Logging(modules.Resource(), incTraceCode, "GUEST", incClientIP, "error getting code description ", err)
-			codeDescription = err.Error()
-		} else {
-			codeDescription = theDescription
-		}
-
-		ctx.JSON(200, gin.H{
-			"code": codeStatus,
-			"description": codeDescription, 
-		})
-	})
-
-	r.GET("/login/google", apicall.GoogleLogin)
-	r.GET("/login/google/callback", apicall.GoogleLoginCallback(db))
-
-	modules.Logging(modules.Resource(), "STARTING UP", "START SERVICE", "SERVER IP", "Starting up API on port " + THEPORT, nil)
-	err := r.Run(":" + THEPORT)
-	if err != nil {
-		panic(err)
+	customFunc := func(p interface{}) (err error) {
+		return status.Errorf(codes.Unknown, "panic triggered: %v", p)
 	}
+	// Shared options for the logger, with a custom gRPC code to log level function.
+	opts := []grpc_recovery.Option{
+		grpc_recovery.WithRecoveryHandler(customFunc),
+	}
+
+	opt1 := grpc.MaxConcurrentStreams(250)
+	srv = grpc.NewServer(grpc_middleware.WithUnaryServerChain(
+		grpc_recovery.UnaryServerInterceptor(opts...),
+	),
+	grpc_middleware.WithStreamServerChain(
+		grpc_recovery.StreamServerInterceptor(opts...),
+	),opt1)
+
+	test.RegisterHelloWorldServiceServer(srv, testServer)
+	modules.Logging(modules.Resource(), "STARTING RPC TESTING", "SERVER", "SERVER IP", "RPC TESTING loaded", nil)
+
+	l, err := net.Listen("tcp", ":"+THEPORT)
+
+	if err != nil {
+		modules.Logging(modules.Resource(), "STARTING RPC TESTING", "START RPC", "SERVER IP", "RPC Failed to start and listen port : "+THEPORT, err)
+	} else {
+		modules.Logging(modules.Resource(), "STARTING RPC TESTING", "START RPC", "SERVER IP", "RPC Start and Listen on port : "+THEPORT, nil)
+		fmt.Println("SERVICE RPC TESTING IS ACTIVE ON PORT " + THEPORT)
+	}
+
+	log.Fatal(srv.Serve(l))
 }
