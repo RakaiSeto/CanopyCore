@@ -1,0 +1,15 @@
+syntax = "proto3";
+option go_package = ".";
+package test;
+
+message EmptyRequest {}
+
+message HelloWorldResponse {
+    string hello = 1;
+}
+
+service HelloWorldService {
+
+    rpc DoHelloWorld(EmptyRequest) returns (HelloWorldResponse) {}
+
+}
