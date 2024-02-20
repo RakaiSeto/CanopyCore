@@ -1,5 +1,11 @@
 package error_code
 
+import (
+	"canopyCore/modules"
+	"database/sql"
+	"fmt"
+)
+
 // import "fmt"
 
 // func ErrorNoError() error {
@@ -52,3 +58,42 @@ const (
 	ErrorNoOTP = "904"
 	ErrorBadOTP = "905"
 )
+
+func GetErrorStatus(db *sql.DB, code string) (string, error) {
+	theString := ""
+
+	query := "SELECT description " +
+		"FROM global_error_status " +
+		"WHERE error_code = $1"
+
+	rows, err := db.Query(query, code)
+
+	if err != nil {
+		return theString, err
+	} else {
+		defer func(rows *sql.Rows) {
+			errC := rows.Close()
+			if errC != nil {
+				fmt.Println("error closing rows: ", errC)
+			}
+		}(rows)
+
+		for rows.Next() {
+			var rawDescription sql.NullString
+
+			err = rows.Scan(&rawDescription)
+
+			if err != nil {
+				// Error scan table countryCodePrefix
+				rows.Close()
+				return theString, err
+			} else {
+				theString = modules.ConvertSQLNullStringToString(rawDescription)
+			}
+		}
+		rows.Close()
+	}
+
+	
+	return theString, nil
+}
