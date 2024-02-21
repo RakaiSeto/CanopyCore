@@ -14,8 +14,8 @@ func LoadConfig() map[string]string {
 	ctx := context.Background()
 	mapConfig := make(map[string]string)
 
-	// errEnv := godotenv.Load("./../../.env")
-	errEnv := godotenv.Load("/canopy/app/.env")
+	errEnv := godotenv.Load("./../../.env")
+	// errEnv := godotenv.Load("/canopy/app/.env")
 	if errEnv != nil {
 		panic(errEnv)
 	}
@@ -27,7 +27,7 @@ func LoadConfig() map[string]string {
 		panic(err)
 	}
 	
-	resp, err := cl.Read(ctx, "v1/topsecret/data/canopy")
+	resp, err := cl.Read(ctx, "v1/topsecret/data/canopyScrapper")
 	if err != nil {
 		panic(err)
 	}
