@@ -47,6 +47,6 @@ jobs:
 
             cd /github/CanopyCore/utils/school_scraping/
             go build -o schoolScraping .
-            sudo mv testingRPC /canopy/app/schoolScraping
+            sudo mv schoolScraping /canopy/app/schoolScraping
             sudo chmod +x /canopy/app/schoolScraping
             sudo supervisorctl restart utils:schoolScraping
