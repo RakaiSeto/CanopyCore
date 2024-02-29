@@ -1,8 +1,8 @@
 package modules
 
 import (
+	helper "CanopyCore/APP/Helper"
 	"bytes"
-	helper "canopyCore/APP/Helper"
 	"context"
 	"crypto/md5"
 	"crypto/sha1"
@@ -169,11 +169,11 @@ func InitiateGlobalVariables() {
 
 func initiateOauthHandler() {
 	helper.GoogleOauthLogin = &oauth2.Config{
-		RedirectURL: "https://apicanopy.rakaiseto.com/login/google/callback",
-		ClientID: os.Getenv("GOOGLE_CLIENT_ID"),
+		RedirectURL:  "https://apicanopy.rakaiseto.com/login/google/callback",
+		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
 		ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
-		Scopes: []string{"https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"},
-		Endpoint: google.Endpoint,
+		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"},
+		Endpoint:     google.Endpoint,
 	}
 	fmt.Println(os.Getenv("GOOGLE_CLIENT_ID"))
 	fmt.Println(os.Getenv("GOOGLE_CLIENT_SECRET"))
@@ -1062,11 +1062,10 @@ func Logging(incResource []string, incTraceCode string, incIdentity string, incR
 	}
 }
 
-
 func ReplaceSQL(old, searchPattern string) string {
 	tmpCount := strings.Count(old, searchPattern)
 	for m := 1; m <= tmpCount; m++ {
-	   old = strings.Replace(old, searchPattern, "$"+strconv.Itoa(m), 1)
+		old = strings.Replace(old, searchPattern, "$"+strconv.Itoa(m), 1)
 	}
 	return old
- }
+}

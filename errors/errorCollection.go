@@ -1,7 +1,7 @@
 package error_code
 
 import (
-	"canopyCore/modules"
+	"CanopyCore/modules"
 	"database/sql"
 	"fmt"
 )
@@ -45,18 +45,18 @@ import (
 // }
 
 const (
-	ErrorSuccess = "000"
-	ErrorUnverifiedAccount = "101"
+	ErrorSuccess              = "000"
+	ErrorUnverifiedAccount    = "101"
 	ErrorAccountAlreadyExists = "102"
-	ErrorAuthStateNotExist = "103"
-	ErrorBadAccount = "106"
-	ErrorBadPassword = "107"
-	ErrorWebInvalidSession = "704"
-	ErrorServer = "900"
-	ErrorInvalidParameter = "902"
-	ErrorSendEmail = "903"
-	ErrorNoOTP = "904"
-	ErrorBadOTP = "905"
+	ErrorAuthStateNotExist    = "103"
+	ErrorBadAccount           = "106"
+	ErrorBadPassword          = "107"
+	ErrorWebInvalidSession    = "704"
+	ErrorServer               = "900"
+	ErrorInvalidParameter     = "902"
+	ErrorSendEmail            = "903"
+	ErrorNoOTP                = "904"
+	ErrorBadOTP               = "905"
 )
 
 func GetErrorStatus(db *sql.DB, code string) (string, error) {
@@ -94,6 +94,5 @@ func GetErrorStatus(db *sql.DB, code string) (string, error) {
 		rows.Close()
 	}
 
-	
 	return theString, nil
 }

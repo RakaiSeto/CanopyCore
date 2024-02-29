@@ -1,7 +1,7 @@
 package main
 
 import (
-	"canopyCore/modules"
+	"CanopyCore/modules"
 	"context"
 	"database/sql"
 	"fmt"
@@ -9,7 +9,7 @@ import (
 	"runtime"
 	"time"
 
-	test "canopyCore/grpc/test"
+	test "CanopyCore/grpc/test"
 
 	"log"
 
@@ -33,7 +33,7 @@ var srv *grpc.Server
 
 const THEPORT = "20000"
 
-type TestServer struct{
+type TestServer struct {
 	test.HelloWorldServiceServer
 }
 
@@ -128,9 +128,9 @@ func main() {
 	srv = grpc.NewServer(grpc_middleware.WithUnaryServerChain(
 		grpc_recovery.UnaryServerInterceptor(opts...),
 	),
-	grpc_middleware.WithStreamServerChain(
-		grpc_recovery.StreamServerInterceptor(opts...),
-	),opt1)
+		grpc_middleware.WithStreamServerChain(
+			grpc_recovery.StreamServerInterceptor(opts...),
+		), opt1)
 
 	test.RegisterHelloWorldServiceServer(srv, testServer)
 	modules.Logging(modules.Resource(), "STARTING RPC TESTING", "SERVER", "SERVER IP", "RPC TESTING loaded", nil)
