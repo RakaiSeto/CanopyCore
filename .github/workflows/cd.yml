@@ -42,8 +42,8 @@ jobs:
             cd /github/CanopyCore/RPC/RPCTest/
             go build -o testingRPC .
             sudo mv testingRPC /canopy/app/testingRPC
-            sudo chmod +x /canopy/app/canopyAPI
-            sudo supervisorctl restart API:canopyAPI
+            sudo chmod +x /canopy/app/testingRPC
+            sudo supervisorctl restart RPC:testingRPC
 
             cd /github/CanopyCore/utils/school_scraping/
             go build -o schoolScraping .
