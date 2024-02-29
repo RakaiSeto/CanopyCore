@@ -153,6 +153,7 @@ type Formatter struct {
 
 // Global Variable for MapConfig
 var MapConfig = make(map[string]string)
+var MapConfigScapper = make(map[string]string)
 
 // Global Logger for all
 var zapLogger *zap.Logger
@@ -162,6 +163,7 @@ var RedisPooler *redis.Pool
 
 func InitiateGlobalVariables() {
 	MapConfig = LoadConfig()
+	MapConfigScapper = LoadConfigScrapper()
 	zapLogger = initiateZapLogger()
 	RedisPooler = RedisInitiateRedisPool()
 	initiateOauthHandler()

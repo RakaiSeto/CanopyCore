@@ -10,7 +10,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func LoadConfig() map[string]string {
+func LoadConfigScrapper() map[string]string {
 	ctx := context.Background()
 	mapConfig := make(map[string]string)
 
@@ -28,6 +28,43 @@ func LoadConfig() map[string]string {
 	}
 
 	resp, err := cl.Read(ctx, "v1/topsecret/data/canopyScrapper")
+	if err != nil {
+		panic(err)
+	}
+
+	data, ok := resp.Data["data"].(map[string]interface{})
+	if !ok {
+		panic("not map interface")
+	}
+
+	for key, value := range data {
+		strKey := fmt.Sprintf("%v", key)
+		strValue := fmt.Sprintf("%v", value)
+
+		mapConfig[strKey] = strValue
+	}
+
+	return mapConfig
+}
+
+func LoadConfig() map[string]string {
+	ctx := context.Background()
+	mapConfig := make(map[string]string)
+
+	//errEnv := godotenv.Load("./../../.env")
+	errEnv := godotenv.Load("/canopy/app/.env")
+	if errEnv != nil {
+		panic(errEnv)
+	}
+
+	cl := initVaultClient()
+
+	err := cl.SetToken(os.Getenv("VAULT_TOKEN"))
+	if err != nil {
+		panic(err)
+	}
+
+	resp, err := cl.Read(ctx, "v1/topsecret/data/canopy")
 	if err != nil {
 		panic(err)
 	}
