@@ -4,18 +4,8 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83f7425e-5266-4043-b40d-c96e06529d98" name="Changes" comment="">
+    <list default="true" id="83f7425e-5266-4043-b40d-c96e06529d98" name="Changes" comment="fix : add go mod">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/APP/API/api.go" beforeDir="false" afterPath="$PROJECT_DIR$/APP/API/api.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/APP/Helper/go.mod" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/APP/Helper/go.sum" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Configuration/go.mod" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.work.sum" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/go.mod" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/go.sum" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/school_scraping/go.mod" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/school_scraping/go.sum" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/school_scraping/scraping.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/school_scraping/scraping.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,6 +104,14 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="undo doc" />
+    <MESSAGE value="feat : docker done" />
+    <MESSAGE value="undo dock" />
+    <MESSAGE value="fix : use github action instead" />
+    <MESSAGE value="fix : add go mod" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix : add go mod" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
