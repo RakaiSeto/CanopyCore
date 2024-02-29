@@ -14,8 +14,8 @@ func LoadConfig() map[string]string {
 	ctx := context.Background()
 	mapConfig := make(map[string]string)
 
-	errEnv := godotenv.Load("./../../.env")
-	// errEnv := godotenv.Load("/canopy/app/.env")
+	//errEnv := godotenv.Load("./../../.env")
+	errEnv := godotenv.Load("/canopy/app/.env")
 	if errEnv != nil {
 		panic(errEnv)
 	}
@@ -26,7 +26,7 @@ func LoadConfig() map[string]string {
 	if err != nil {
 		panic(err)
 	}
-	
+
 	resp, err := cl.Read(ctx, "v1/topsecret/data/canopyScrapper")
 	if err != nil {
 		panic(err)
@@ -38,11 +38,11 @@ func LoadConfig() map[string]string {
 	}
 
 	for key, value := range data {
-        strKey := fmt.Sprintf("%v", key)
-        strValue := fmt.Sprintf("%v", value)
+		strKey := fmt.Sprintf("%v", key)
+		strValue := fmt.Sprintf("%v", value)
 
-        mapConfig[strKey] = strValue
-    }
+		mapConfig[strKey] = strValue
+	}
 
 	return mapConfig
 }
@@ -57,6 +57,6 @@ func initVaultClient() *vault.Client {
 	if err != nil {
 		panic(err)
 	}
-	
+
 	return client
 }
