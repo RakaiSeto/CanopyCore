@@ -1,8 +1,8 @@
 package apicall
 
 import (
-	helper "canopyCore/APP/Helper"
-	"canopyCore/modules"
+	helper "CanopyCore/APP/Helper"
+	"CanopyCore/modules"
 	"database/sql"
 	"encoding/json"
 	"net/http"
@@ -22,7 +22,7 @@ func GoogleLoginCallback(db *sql.DB) gin.HandlerFunc {
 		incClientIP := ctx.ClientIP()
 		state := ctx.Query("state")
 		code := ctx.Query("code")
-	
+
 		if state != helper.GoogleState {
 			modules.Logging(modules.Resource(), incTraceCode, "GUESTLOGIN", incClientIP, "Google Oauth state mismatch", nil)
 			errString := "state string is different"
@@ -30,22 +30,22 @@ func GoogleLoginCallback(db *sql.DB) gin.HandlerFunc {
 				"result": errString,
 			})
 		}
-	
+
 		data, err := helper.GetGoogleInfo(code)
 		if err != nil {
 			errString := err.Error()
 			ctx.JSON(200, gin.H{
 				"result": errString,
-			})	
+			})
 		}
-	
+
 		var x map[string]interface{}
 		json.Unmarshal([]byte(data), &x)
 
 		// query := `SELECT `
 
 		ctx.JSON(200, gin.H{
-			"name": x["name"].(string),
+			"name":  x["name"].(string),
 			"email": x["email"].(string),
 		})
 	}
