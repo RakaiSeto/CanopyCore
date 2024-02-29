@@ -23,6 +23,12 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: 2233
           script: |
+          
+            export NVM_DIR=~/.nvm
+            source ~/.nvm/nvm.sh    
+
+            PATH="/usr/local/go/bin/:$PATH"
+          
             cd /github/CanopyCore
             git pull origin main
             git status
