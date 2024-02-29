@@ -1,9 +1,9 @@
 package main
 
 import (
-	apicall "canopyCore/APP/APICall"
-	error_code "canopyCore/errors"
-	"canopyCore/modules"
+	apicall "CanopyCore/APP/APICall"
+	error_code "CanopyCore/errors"
+	"CanopyCore/modules"
 	"context"
 	"database/sql"
 	"fmt"
@@ -111,15 +111,15 @@ func main() {
 		}
 
 		ctx.JSON(200, gin.H{
-			"code": codeStatus,
-			"description": codeDescription, 
+			"code":        codeStatus,
+			"description": codeDescription,
 		})
 	})
 
 	r.GET("/login/google", apicall.GoogleLogin)
 	r.GET("/login/google/callback", apicall.GoogleLoginCallback(db))
 
-	modules.Logging(modules.Resource(), "STARTING UP", "START SERVICE", "SERVER IP", "Starting up API on port " + THEPORT, nil)
+	modules.Logging(modules.Resource(), "STARTING UP", "START SERVICE", "SERVER IP", "Starting up API on port "+THEPORT, nil)
 	err := r.Run(":" + THEPORT)
 	if err != nil {
 		panic(err)
