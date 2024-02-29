@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83f7425e-5266-4043-b40d-c96e06529d98" name="Changes" comment="fix : add go mod">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="83f7425e-5266-4043-b40d-c96e06529d98" name="Changes" comment="fix : case insensitive imports part 2" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -111,7 +109,9 @@
     <MESSAGE value="undo dock" />
     <MESSAGE value="fix : use github action instead" />
     <MESSAGE value="fix : add go mod" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix : add go mod" />
+    <MESSAGE value="fix : case insensitive imports" />
+    <MESSAGE value="fix : case insensitive imports part 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix : case insensitive imports part 2" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
