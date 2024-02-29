@@ -1,6 +1,7 @@
 package modules
 
 import (
+	Config "CanopyCore/Configuration"
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
@@ -8,7 +9,6 @@ import (
 	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"io"
-	Config "canopyCore/Configuration"
 	"strings"
 )
 

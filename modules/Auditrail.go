@@ -1,11 +1,11 @@
 package modules
 
 import (
+	Config "CanopyCore/Configuration"
 	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	Config "canopyCore/Configuration"
 )
 
 type TheWebActivity struct {

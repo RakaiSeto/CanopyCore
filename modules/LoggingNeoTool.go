@@ -1,9 +1,9 @@
 package modules
 
 import (
+	Config "CanopyCore/Configuration"
 	"encoding/json"
 	"fmt"
-	Config "canopyCore/Configuration"
 	"strings"
 	"time"
 
@@ -11,24 +11,24 @@ import (
 )
 
 type Receipt struct {
-	Receiptno    string `json:"receiptno"`
-	Recipient    string `json:"recipient"`
-	Type         string `json:"type"`
-	Storename    string `json:"storename"`
-	Storeaddress string `json:"storeaddress"`
-	Storecity    string `json:"storecity"`
-	Storecountry string `json:"storecountry"`
-	Storecategory string `json:"storecategory"`
-	Datetime     string `json:"datetime"`
-	Order        []ReceiptOrder `json:"order"`
-	Total      int    `json:"total"`
-	Tax        int    `json:"tax"`
-	Service    int    `json:"service"`
-	Grandtotal int    `json:"grandtotal"`
-	Payment    string `json:"payment"`
-	Cardnumber string `json:"cardnumber"`
-	Received   int    `json:"received"`
-	Change     int    `json:"change"`
+	Receiptno     string         `json:"receiptno"`
+	Recipient     string         `json:"recipient"`
+	Type          string         `json:"type"`
+	Storename     string         `json:"storename"`
+	Storeaddress  string         `json:"storeaddress"`
+	Storecity     string         `json:"storecity"`
+	Storecountry  string         `json:"storecountry"`
+	Storecategory string         `json:"storecategory"`
+	Datetime      string         `json:"datetime"`
+	Order         []ReceiptOrder `json:"order"`
+	Total         int            `json:"total"`
+	Tax           int            `json:"tax"`
+	Service       int            `json:"service"`
+	Grandtotal    int            `json:"grandtotal"`
+	Payment       string         `json:"payment"`
+	Cardnumber    string         `json:"cardnumber"`
+	Received      int            `json:"received"`
+	Change        int            `json:"change"`
 }
 
 type ReceiptOrder struct {
@@ -163,15 +163,15 @@ func DoSendReceiptToQueue(chOnlineLog *amqp.Channel, messageId string, dateTime 
 
 	// Convert mapLogMessage to JSON
 	jsonLogMessage, err := json.Marshal(receipt)
-    if err != nil {
+	if err != nil {
 		Logging(Resource(), messageId, "POS SEND RECEIPT", "SERVER", "Failed to marshal JSON", err)
-    }
+	}
 
 	// Publish to queue online log
 	errP := chOnlineLog.Publish(
-		"",                             // exchange
+		"",                     // exchange
 		"TRCV_PAYMENT_RECEIPT", // Email queue router
-		false,                          // mandatory
+		false,                  // mandatory
 		false,
 		amqp.Publishing{
 			DeliveryMode: amqp.Persistent,
