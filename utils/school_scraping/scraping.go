@@ -61,8 +61,6 @@ func main() {
 	modules.InitiateGlobalVariables()
 	runtime.GOMAXPROCS(4)
 
-	start := time.Now()
-
 	// Initiate Database
 	var errDB error
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
@@ -98,38 +96,43 @@ func main() {
 	c := cron.New()
 	defer c.Stop()
 
-	c.AddFunc("@weekly", func() {
-		truncateQuery := `TRUNCATE TABLE public.global_school_data`
+	startScraping()
 
-		_, errTruncate := db.Exec(truncateQuery)
-		if errTruncate != nil {
-			modules.Logging(modules.Resource(), "", "SERVER", "", "err when truncate table", errTruncate)
-			return
-		} else {
-			workers := 1000
-			guard := make(chan struct{}, workers)
-			for i := 1; i < 40; i++ {
-				for j := 1; j < 100; j++ {
-					for k := 1; k < 100; k++ {
-						guard <- struct{}{}
-						go func(i int, j int, k int) {
-							getData(i, j, k)
-							<-guard
-						}(i, j, k)
-					}
-				}
-			}
-		}
-
-		elapsed := time.Since(start)
-		fmt.Printf("Binomial took %s", elapsed)
-	})
+	c.AddFunc("@weekly", startScraping)
 
 	go c.Start()
 
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
 	<-sig
+}
+
+func startScraping() {
+	start := time.Now()
+	truncateQuery := `TRUNCATE TABLE public.global_school_data`
+
+	_, errTruncate := db.Exec(truncateQuery)
+	if errTruncate != nil {
+		modules.Logging(modules.Resource(), "", "SERVER", "", "err when truncate table", errTruncate)
+		return
+	} else {
+		workers := 1000
+		guard := make(chan struct{}, workers)
+		for i := 1; i < 40; i++ {
+			for j := 1; j < 100; j++ {
+				for k := 1; k < 100; k++ {
+					guard <- struct{}{}
+					go func(i int, j int, k int) {
+						getData(i, j, k)
+						<-guard
+					}(i, j, k)
+				}
+			}
+		}
+	}
+
+	elapsed := time.Since(start)
+	fmt.Printf("Binomial took %s", elapsed)
 }
 
 func getData(provinsi int, kota int, kecamatan int) {
@@ -157,29 +160,29 @@ func getData(provinsi int, kota int, kecamatan int) {
 
 	request, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		modules.Logging(modules.Resource(), tracecode, "SERVER", "SERVER IP", "error creating request", err)
+		modules.Logging(modules.Resource(), tracecode, fmt.Sprint(theprovinsi, thekota, thekecamatan), "SERVER IP", "error creating request", err)
 	}
 
 	response, err := client.Do(request)
 	if err != nil {
-		modules.Logging(modules.Resource(), tracecode, "SERVER", "SERVER IP", "error do request", err)
+		modules.Logging(modules.Resource(), tracecode, fmt.Sprint(theprovinsi, thekota, thekecamatan), "SERVER IP", "error do request", err)
 	}
 	defer response.Body.Close()
 
 	b, err := io.ReadAll(response.Body)
 	if err != nil {
-		modules.Logging(modules.Resource(), tracecode, "SERVER", "SERVER IP", "error read response body", err)
+		modules.Logging(modules.Resource(), tracecode, fmt.Sprint(theprovinsi, thekota, thekecamatan), "SERVER IP", "error read response body", err)
 	}
 
 	body := string(b)
 
 	err = json.Unmarshal([]byte(body), &data)
 	if err != nil {
-		modules.Logging(modules.Resource(), tracecode, "SERVER", "SERVER IP", "error unmarshal request", err)
+		modules.Logging(modules.Resource(), tracecode, fmt.Sprint(theprovinsi, thekota, thekecamatan), "SERVER IP", "error unmarshal request", err)
 	}
 
 	if response.Status == "200 OK" && len(data) > 0 {
-		modules.Logging(modules.Resource(), tracecode, "SERVER", "SERVER IP", "done get school for "+data[0].IndukProvinsi+", "+data[0].IndukKabupaten+", "+data[0].IndukKecamatan+": "+fmt.Sprint(len(data)), nil)
+		modules.Logging(modules.Resource(), tracecode, fmt.Sprint(theprovinsi, thekota, thekecamatan), "SERVER IP", "done get school for "+data[0].IndukProvinsi+", "+data[0].IndukKabupaten+", "+data[0].IndukKecamatan+": "+fmt.Sprint(len(data)), nil)
 	}
 
 	if len(data) > 0 {
@@ -201,7 +204,7 @@ func getData(provinsi int, kota int, kecamatan int) {
 		//format all vals at once
 		_, errUpdated := stmt.Exec(vals...)
 		if errUpdated != nil {
-			modules.Logging(modules.Resource(), "", "SERVER", "", "err when inserting data : "+data[0].IndukProvinsi+", "+data[0].IndukKabupaten+", "+data[0].IndukProvinsi, errUpdated)
+			modules.Logging(modules.Resource(), "", fmt.Sprint(theprovinsi, thekota, thekecamatan), "", "err when inserting data : "+data[0].IndukProvinsi+", "+data[0].IndukKabupaten+", "+data[0].IndukProvinsi, errUpdated)
 		}
 	}
 }
