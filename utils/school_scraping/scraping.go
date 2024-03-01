@@ -64,8 +64,8 @@ func main() {
 	// Initiate Database
 	var errDB error
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		modules.MapConfig["pgsqlHost"], modules.MapConfig["pgsqlPort"], modules.MapConfig["pgsqlUser"],
-		modules.MapConfig["pgsqlPassword"], modules.MapConfig["pgsqlName"])
+		modules.MapConfigScapper["pgsqlHost"], modules.MapConfigScapper["pgsqlPort"], modules.MapConfigScapper["pgsqlUser"],
+		modules.MapConfigScapper["pgsqlPassword"], modules.MapConfigScapper["pgsqlName"])
 	db, errDB = sql.Open("postgres", psqlInfo) // db udah di defined diatas, jadi harus pake = bukan :=
 
 	if errDB != nil {

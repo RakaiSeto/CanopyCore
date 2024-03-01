@@ -1,0 +1,52 @@
+name: cd
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  cd:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@main
+
+      - name: Deploy Using ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 2233
+          script: |
+          
+            export NVM_DIR=~/.nvm
+            source ~/.nvm/nvm.sh    
+
+            PATH="/usr/local/go/bin/:$PATH"
+          
+            cd /github/CanopyCore
+            git pull origin main
+            git status
+            
+            cd APP/API
+            go build -o canopyAPI .
+            sudo mv canopyAPI /canopy/app/canopyAPI
+            sudo chmod +x /canopy/app/canopyAPI
+            sudo supervisorctl restart API:canopyAPI
+            
+            cd /github/CanopyCore/RPC/RPCTest/
+            go build -o testingRPC .
+            sudo mv testingRPC /canopy/app/testingRPC
+            sudo chmod +x /canopy/app/testingRPC
+            sudo supervisorctl restart RPC:testingRPC
+
+            cd /github/CanopyCore/utils/school_scraping/
+            go build -o schoolScraping .
+            sudo mv schoolScraping /canopy/app/schoolScraping
+            sudo chmod +x /canopy/app/schoolScraping
+            sudo supervisorctl restart utils:schoolScraping
