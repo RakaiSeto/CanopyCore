@@ -44,6 +44,11 @@ func (globaldataServer GlobalDataServer) GetAllCountry(ctx context.Context, requ
 	return localResponse, nil
 }
 
+func (globaldataServer GlobalDataServer) GetAllRole(ctx context.Context, request *globaldata.EmptyRequest) (*globaldata.AllRoleResponse, error) {
+	localResponse, _ := RPCCall.CallFunctionGetAllRoles(ctx, db)
+	return localResponse, nil
+}
+
 func main() {
 	// Load configuration file
 	modules.InitiateGlobalVariables()

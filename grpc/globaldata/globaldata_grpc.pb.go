@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type GlobalDataServiceClient interface {
 	GetAllCountry(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*AllCountryResponse, error)
+	GetAllRole(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*AllRoleResponse, error)
 }
 
 type globalDataServiceClient struct {
@@ -42,11 +43,21 @@ func (c *globalDataServiceClient) GetAllCountry(ctx context.Context, in *EmptyRe
 	return out, nil
 }
 
+func (c *globalDataServiceClient) GetAllRole(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*AllRoleResponse, error) {
+	out := new(AllRoleResponse)
+	err := c.cc.Invoke(ctx, "/globaldata.GlobalDataService/GetAllRole", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GlobalDataServiceServer is the server API for GlobalDataService service.
 // All implementations must embed UnimplementedGlobalDataServiceServer
 // for forward compatibility
 type GlobalDataServiceServer interface {
 	GetAllCountry(context.Context, *EmptyRequest) (*AllCountryResponse, error)
+	GetAllRole(context.Context, *EmptyRequest) (*AllRoleResponse, error)
 	mustEmbedUnimplementedGlobalDataServiceServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedGlobalDataServiceServer struct {
 
 func (UnimplementedGlobalDataServiceServer) GetAllCountry(context.Context, *EmptyRequest) (*AllCountryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllCountry not implemented")
+}
+func (UnimplementedGlobalDataServiceServer) GetAllRole(context.Context, *EmptyRequest) (*AllRoleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllRole not implemented")
 }
 func (UnimplementedGlobalDataServiceServer) mustEmbedUnimplementedGlobalDataServiceServer() {}
 
@@ -88,6 +102,24 @@ func _GlobalDataService_GetAllCountry_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GlobalDataService_GetAllRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EmptyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GlobalDataServiceServer).GetAllRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/globaldata.GlobalDataService/GetAllRole",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GlobalDataServiceServer).GetAllRole(ctx, req.(*EmptyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GlobalDataService_ServiceDesc is the grpc.ServiceDesc for GlobalDataService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var GlobalDataService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAllCountry",
 			Handler:    _GlobalDataService_GetAllCountry_Handler,
+		},
+		{
+			MethodName: "GetAllRole",
+			Handler:    _GlobalDataService_GetAllRole_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

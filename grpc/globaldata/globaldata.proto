@@ -15,8 +15,20 @@ message AllCountryResponse {
   repeated AllCountryList result = 3;
 }
 
+message AllRoleList {
+  string code = 1;
+  string name = 2;
+}
+
+message AllRoleResponse {
+  string code = 1;
+  string description = 2;
+  repeated AllRoleList result = 3;
+}
+
 service GlobalDataService {
 
   rpc GetAllCountry(EmptyRequest) returns (AllCountryResponse) {}
+  rpc GetAllRole(EmptyRequest) returns (AllRoleResponse) {}
 
 }
