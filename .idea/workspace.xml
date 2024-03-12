@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="8dd86625-d1af-43c7-99e9-b5fc82c62c91" name="Changes" comment="fix : case insensitive imports part 2">
+      <change afterPath="$PROJECT_DIR$/RPC/RPCCall/RPCGlobalData.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/RPC/RPCGlobalData/RPCGlobalData.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/grpc/globaldata/globaldata.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_29_02_2024_16_27__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_29_02_2024_16_27__Changes_.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_29_02_2024_16_27__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_29_02_2024_16_27__Changes_.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/ConfigLoader.go" beforeDir="false" afterPath="$PROJECT_DIR$/modules/ConfigLoader.go" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go Application" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultGoTemplateProperty": "Go Application",
+    "git-widget-placeholder": "feature/school__scraping",
+    "last_opened_file_path": "C:/Users/MSI RAKAI/Documents/GitHub/Project-Canopy/CanopyCore/RPC/RPCGlobal"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\MSI RAKAI\Documents\GitHub\Project-Canopy\CanopyCore\RPC\RPCGlobal" />
+      <recent name="C:\Users\MSI RAKAI\Documents\GitHub\Project-Canopy\CanopyCore\grpc" />
+    </key>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="fix : case insensitive imports part 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix : case insensitive imports part 2" />
+  </component>
+</project>
