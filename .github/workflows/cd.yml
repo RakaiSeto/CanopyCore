@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
   cd:
@@ -37,16 +34,23 @@ jobs:
             go build -o canopyAPI .
             sudo mv canopyAPI /canopy/app/canopyAPI
             sudo chmod +x /canopy/app/canopyAPI
-            sudo supervisorctl restart API:canopyAPI
             
             cd /github/CanopyCore/RPC/RPCTest/
             go build -o testingRPC .
             sudo mv testingRPC /canopy/app/testingRPC
             sudo chmod +x /canopy/app/testingRPC
-            sudo supervisorctl restart RPC:testingRPC
 
             cd /github/CanopyCore/utils/school_scraping/
             go build -o schoolScraping .
             sudo mv schoolScraping /canopy/app/schoolScraping
             sudo chmod +x /canopy/app/schoolScraping
+            
+            cd /github/CanopyCore/RPC/RPCGlobalData/
+            go build -o RPCGlobalData .
+            sudo mv RPCGlobalData /canopy/app/RPCGlobalData
+            sudo chmod +x /canopy/app/RPCGlobalData
+            
+            sudo supervisorctl restart RPC:testingRPC
+            sudo supervisorctl restart RPC:RPCGlobalData
             sudo supervisorctl restart utils:schoolScraping
+            sudo supervisorctl restart API:canopyAPI
