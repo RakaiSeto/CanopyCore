@@ -10,7 +10,7 @@ message AllCountryList {
 }
 
 message AllCountryResponse {
-  string code = 1;
+  string statuscode = 1;
   string description = 2;
   repeated AllCountryList result = 3;
 }
@@ -21,7 +21,7 @@ message AllRoleList {
 }
 
 message AllRoleResponse {
-  string code = 1;
+  string statuscode = 1;
   string description = 2;
   repeated AllRoleList result = 3;
 }

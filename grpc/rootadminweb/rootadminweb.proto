@@ -1,0 +1,38 @@
+syntax = "proto3";
+option go_package = ".";
+package rootadminweb;
+
+message EmptyRequest {}
+
+message DoLoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message DoLoginList {
+  string id = 1;
+  string roleid = 2;
+  string email = 3;
+  string phone = 4;
+  string firstname = 5;
+  string lastname = 6;
+  string fullname = 7;
+  string clientid = 8;
+}
+
+message DoLoginResponse {
+  string statuscode = 1;
+  string description = 2;
+  string session = 3;
+  repeated DoLoginList result = 4;
+}
+
+message DoLogoutResponse {
+  string statuscode = 1;
+  string description = 2;
+}
+
+service RootAdminWebService {
+  rpc DoLogin(DoLoginRequest) returns (DoLoginResponse);
+  rpc DoLogout(EmptyRequest) returns (DoLogoutResponse);
+}
