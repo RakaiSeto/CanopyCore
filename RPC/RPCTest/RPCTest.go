@@ -59,10 +59,10 @@ func main() {
 	db, errDB = sql.Open("postgres", psqlInfo) // db udah di defined diatas, jadi harus pake = bukan :=
 
 	if errDB != nil {
-		modules.Logging(modules.Resource(), "STARTING UP", "START SERVICE", "SERVER IP", "Postgres unconnected", errDB)
+		modules.Logging(modules.Resource(), "STARTING RPC TESTING", "SERVER", "SERVER IP", "Postgres unconnected", errDB)
 		panic(errDB)
 	} else {
-		modules.Logging(modules.Resource(), "STARTING UP", "START SERVICE", "SERVER IP", "Postgres connected", nil)
+		modules.Logging(modules.Resource(), "STARTING RPC TESTING", "SERVER", "SERVER IP", "Postgres connected", nil)
 	}
 
 	db.SetConnMaxLifetime(time.Minute * 10)
@@ -72,9 +72,9 @@ func main() {
 	defer func(db *sql.DB) {
 		err := db.Close()
 		if err != nil {
-			modules.Logging(modules.Resource(), "STARTING UP", "START SERVICE", "SERVER IP", "Failed to close Postgres", err)
+			modules.Logging(modules.Resource(), "STARTING RPC TESTING", "SERVER", "SERVER IP", "Failed to close Postgres", err)
 		} else {
-			modules.Logging(modules.Resource(), "STARTING UP", "START SERVICE", "SERVER IP", "Success to close Postgres", nil)
+			modules.Logging(modules.Resource(), "STARTING RPC TESTING", "SERVER", "SERVER IP", "Success to close Postgres", nil)
 		}
 	}(db)
 
@@ -92,10 +92,10 @@ func main() {
 		modules.MapConfig["rabbitMqPort"] + "/" +
 		modules.MapConfig["rabbitMqVHost"])
 	if errRabbit != nil {
-		modules.Logging(modules.Resource(), "STARTING UP", "START SERVICE", "SERVER IP", "RabbitMQ unconnected", errRabbit)
+		modules.Logging(modules.Resource(), "STARTING RPC TESTING", "SERVER", "SERVER IP", "RabbitMQ unconnected", errRabbit)
 		panic(errRabbit)
 	} else {
-		modules.Logging(modules.Resource(), "STARTING UP", "START SERVICE", "SERVER IP", "RabbitMQ connected", nil)
+		modules.Logging(modules.Resource(), "STARTING RPC TESTING", "SERVER", "SERVER IP", "RabbitMQ connected", nil)
 	}
 	//defer connRabbit.Close()
 
@@ -110,10 +110,10 @@ func main() {
 	cx = context.Background()
 	errRedis := rc.Ping(cx).Err()
 	if errRedis != nil {
-		modules.Logging(modules.Resource(), "STARTING UP", "START SERVICE", "SERVER IP", "Redis unconnected", errRedis)
+		modules.Logging(modules.Resource(), "STARTING RPC TESTING", "SERVER", "SERVER IP", "Redis unconnected", errRedis)
 		panic(errRedis)
 	} else {
-		modules.Logging(modules.Resource(), "STARTING UP", "START SERVICE", "SERVER IP", "Redis connected", nil)
+		modules.Logging(modules.Resource(), "STARTING RPC TESTING", "SERVER", "SERVER IP", "Redis connected", nil)
 	}
 
 	customFunc := func(p interface{}) (err error) {
@@ -137,12 +137,17 @@ func main() {
 
 	l, err := net.Listen("tcp", ":"+THEPORT)
 
+	status := ""
 	if err != nil {
-		modules.Logging(modules.Resource(), "STARTING RPC TESTING", "START RPC", "SERVER IP", "RPC Failed to start and listen port : "+THEPORT, err)
+		status = "FAILED"
+		modules.Logging(modules.Resource(), "STARTING RPC TESTING", "SERVER", "SERVER IP", "RPC Failed to start and listen port : "+THEPORT, err)
 	} else {
-		modules.Logging(modules.Resource(), "STARTING RPC TESTING", "START RPC", "SERVER IP", "RPC Start and Listen on port : "+THEPORT, nil)
+		status = "SUCCESS"
+		modules.Logging(modules.Resource(), "STARTING RPC TESTING", "SERVER", "SERVER IP", "RPC Start and Listen on port : "+THEPORT, nil)
 		fmt.Println("SERVICE RPC TESTING IS ACTIVE ON PORT " + THEPORT)
 	}
+
+	modules.SaveWebActivity(db, "STARTING RPC TESTING", modules.Resource(), "SERVER", "SERVER IP", modules.DoFormatDateTime("YYYY-0M-0D HH:mm:ss.S", time.Now()), "STARTING RPC TESTING", status)
 
 	log.Fatal(srv.Serve(l))
 }
