@@ -109,11 +109,11 @@ func main() {
 
 func startScraping() {
 	start := time.Now()
-	truncateQuery := `TRUNCATE TABLE public.global_school_data`
+	truncateQuery := `TRUNCATE TABLE public.school_data_prep`
 
 	_, errTruncate := db.Exec(truncateQuery)
 	if errTruncate != nil {
-		modules.Logging(modules.Resource(), "", "SERVER", "", "err when truncate table", errTruncate)
+		modules.Logging(modules.Resource(), "", "SERVER", "", "err when truncate table school data prep", errTruncate)
 		return
 	} else {
 		workers := 1000
@@ -127,6 +127,22 @@ func startScraping() {
 						<-guard
 					}(i, j, k)
 				}
+			}
+		}
+
+		truncateQuery := `TRUNCATE TABLE public.global_school_data`
+
+		_, errTruncate := db.Exec(truncateQuery)
+		if errTruncate != nil {
+			modules.Logging(modules.Resource(), "", "SERVER", "", "err when truncate table global school data", errTruncate)
+			return
+		} else {
+			insertQuery := `insert into public.global_school_data(select * from public.school_data_prep)`
+
+			_, errInsert := db.Exec(insertQuery)
+			if errTruncate != nil {
+				modules.Logging(modules.Resource(), "", "SERVER", "", "err when copying data from table school data prep", errInsert)
+				return
 			}
 		}
 	}
@@ -187,7 +203,7 @@ func getData(provinsi int, kota int, kecamatan int) {
 
 	if len(data) > 0 {
 
-		insertIdQuery := `insert into public.global_school_data(nama, sekolah_id, npsn, jumlahkirim, ptk, pegawai, pd, rombel, jumlah_rk, jumlah_lab, jumlah_perpus, induk_kecamatan, induk_kabupaten, kode_wilayah_induk_kabupaten, kode_wilayah_induk_kecamatan, induk_provinsi, kode_wilayah_induk_provinsi, bentuk_pendidikan, status_sekolah, sinkron_terakhir, sekolah_id_enkrip) values `
+		insertIdQuery := `insert into public.school_data_prep(nama, sekolah_id, npsn, jumlahkirim, ptk, pegawai, pd, rombel, jumlah_rk, jumlah_lab, jumlah_perpus, induk_kecamatan, induk_kabupaten, kode_wilayah_induk_kabupaten, kode_wilayah_induk_kecamatan, induk_provinsi, kode_wilayah_induk_provinsi, bentuk_pendidikan, status_sekolah, sinkron_terakhir, sekolah_id_enkrip) values `
 		vals := []interface{}{}
 
 		for x := 0; x < len(data); x++ {
