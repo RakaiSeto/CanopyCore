@@ -30,33 +30,6 @@ jobs:
             git pull origin main
             git status
             
-            cd APP/API
-            go build -o canopyAPI .
-            sudo mv canopyAPI /canopy/app/canopyAPI
-            sudo chmod +x /canopy/app/canopyAPI
-            
-            cd /github/CanopyCore/RPC/RPCTest/
-            go build -o testingRPC .
-            sudo mv testingRPC /canopy/app/testingRPC
-            sudo chmod +x /canopy/app/testingRPC
-
-            cd /github/CanopyCore/utils/school_scraping/
-            go build -o schoolScraping .
-            sudo mv schoolScraping /canopy/app/schoolScraping
-            sudo chmod +x /canopy/app/schoolScraping
-            
-            cd /github/CanopyCore/RPC/RPCGlobalData/
-            go build -o RPCGlobalData .
-            sudo mv RPCGlobalData /canopy/app/RPCGlobalData
-            sudo chmod +x /canopy/app/RPCGlobalData
-            
-            cd /github/CanopyCore/RPC/RPCRootAdminWeb/
-            go build -o RPCRootAdminWeb .
-            sudo mv RPCGlobalData /canopy/app/RPCRootAdminWeb
-            sudo chmod +x /canopy/app/RPCRootAdminWeb
-            
-            sudo supervisorctl restart RPC:testingRPC
-            sudo supervisorctl restart RPC:RPCGlobalData
-            sudo supervisorctl restart RPC:RPCRootAdminWeb
-            sudo supervisorctl restart utils:schoolScraping
-            sudo supervisorctl restart API:canopyAPI
+            docker-compose down
+            docker-compose build
+            docker-compose up

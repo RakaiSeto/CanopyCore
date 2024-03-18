@@ -1,0 +1,65 @@
+version: "3"
+services:
+  schoolscraping:
+    build:
+        dockerfile: ./utils/school_scraping/Dockerfile
+        context: ./
+    image: rakaiseto/schoolscraping:${TAG:-latest}
+    container_name: schoolscraping
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "50"
+  rpc_test:
+    build:
+      dockerfile: ./RPC/RPCTest/Dockerfile
+      context: ./
+    image: rakaiseto/rpc_test:${TAG:-latest}
+    container_name: rpc_test
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "50"
+    ports:
+      - "20000:20000"
+  rpc_global_data:
+    build:
+      dockerfile: ./RPC/RPCGlobalData/Dockerfile
+      context: ./
+    image: rakaiseto/rpc_global_data:${TAG:-latest}
+    container_name: rpc_global_data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "50"
+    ports:
+      - "20010:20010"
+  rpc_root_admin_web:
+    build:
+      dockerfile: ./RPC/RPCRootAdminWeb/Dockerfile
+      context: ./
+    image: rakaiseto/rpc_root_admin_web:${TAG:-latest}
+    container_name: rpc_root_admin_web
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "50"
+    ports:
+      - "20020:20020"
+  api:
+    build:
+      dockerfile: ./APP/API/Dockerfile
+      context: ./
+    image: rakaiseto/api:${TAG:-latest}
+    container_name: api
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "50"
+    ports:
+      - "10000:10000"

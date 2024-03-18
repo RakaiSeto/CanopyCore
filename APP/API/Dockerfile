@@ -10,18 +10,18 @@ WORKDIR /app
 COPY go.mod .
 COPY go.sum .
 ADD modules ./modules
-ADD utils ./utils
-ADD APP/Helper ./APP/Helper
+ADD errors ./errors
+ADD APP ./APP
 ADD Configuration ./Configuration
 
 # Change the working directory to /canopy/app/utils/school_scraping
-WORKDIR /app/utils/school_scraping
+WORKDIR /app/APP/API
 
 # Display the content of the school_scraping directory
 RUN ls /app
 
 # Build the Go application
-RUN CGO_ENABLED=0 GOOS=linux go build -o school_scraping .
+RUN CGO_ENABLED=0 GOOS=linux go build -o API .
 
 ############################
 # STEP 2 build a small image
@@ -34,8 +34,8 @@ COPY .env /canopy/app/.env
 
 COPY --from=builder /usr/local/go/lib/time/ /usr/local/go/lib/time/
 
-COPY --from=builder /app/utils/school_scraping /app
+COPY --from=builder /app/APP/API /app
 
 RUN ls /app
 
-CMD ["/app/school_scraping"]
+CMD ["/app/API"]
