@@ -7,6 +7,7 @@ import (
 	"CanopyCore/modules"
 	"context"
 	"database/sql"
+	"fmt"
 	"github.com/go-redis/redis/v8"
 	"time"
 )
@@ -76,17 +77,31 @@ func CallFunctionDoLoginRootAdminWeb(ctx context.Context, db *sql.DB, rc *redis.
 	return localResponse, nil
 }
 
-func CallFunctionDoLogoutRootAdminWeb(ctx context.Context, db *sql.DB, rc *redis.Client, request *rootadminweb.EmptyRequest) (*rootadminweb.DoLogoutResponse, error) {
+func CallFunctionDoLogoutRootAdminWeb(ctx context.Context, db *sql.DB, rc *redis.Client, request *rootadminweb.DoLogoutRequest) (*rootadminweb.DoLogoutResponse, error) {
 	localResponse := new(rootadminweb.DoLogoutResponse)
 
 	incTraceCode := modules.GenerateUUID()
-
-	//var mapRequest = make(map[string]interface{})
+	incRequestEmail := request.Email
+	var mapRequest = make(map[string]interface{})
 
 	responseStatus := error_code.ErrorServer
 	responseDescription := ""
 
 	strRemoteIP := modules.GetGRPCRemoteIP(ctx)
+
+	modules.Logging(modules.Resource(), incTraceCode, incRequestEmail, strRemoteIP, "Start process Do Logout", nil)
+
+	fmt.Println("email : ", incRequestEmail)
+	if len(incRequestEmail) > 0 {
+		mapRequest["tracecode"] = incTraceCode
+		mapRequest["remoteip"] = strRemoteIP
+		mapRequest["email"] = incRequestEmail
+
+		responseStatus = RPCHelper.HelperDoLogoutRootAdminWeb(ctx, rc, mapRequest)
+	} else {
+		responseStatus = error_code.ErrorInvalidParameter
+		modules.Logging(modules.Resource(), incTraceCode, incRequestEmail, strRemoteIP, "Invalid Parameter", nil)
+	}
 
 	var getError error
 	responseDescription, getError = error_code.GetErrorStatus(db, responseStatus)
@@ -99,13 +114,13 @@ func CallFunctionDoLogoutRootAdminWeb(ctx context.Context, db *sql.DB, rc *redis
 
 	localResponse.Statuscode = responseStatus
 
-	//status := ""
-	//if responseStatus == error_code.ErrorSuccess {
-	//	status = "SUCCESS"
-	//} else {
-	//	status = "FAILED"
-	//}
-	//modules.SaveWebActivity(db, incTraceCode, modules.Resource(), incRequestEmail, strRemoteIP, modules.DoFormatDateTime("YYYY-0M-0D HH:mm:ss.S", time.Now()), "DO LOGOUT ROOT ADMIN WEB", status)
+	status := ""
+	if responseStatus == error_code.ErrorSuccess {
+		status = "SUCCESS"
+	} else {
+		status = "FAILED"
+	}
+	modules.SaveWebActivity(db, incTraceCode, modules.Resource(), incRequestEmail, strRemoteIP, modules.DoFormatDateTime("YYYY-0M-0D HH:mm:ss.S", time.Now()), "DO LOGOUT ROOT ADMIN WEB", status)
 
 	return localResponse, nil
 }

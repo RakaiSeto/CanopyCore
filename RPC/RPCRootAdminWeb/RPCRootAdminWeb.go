@@ -44,7 +44,7 @@ func (rootAdminWebServer RootAdminWebServer) DoLogin(ctx context.Context, reques
 	return localResponse, nil
 }
 
-func (rootAdminWebServer RootAdminWebServer) DoLogout(ctx context.Context, request *rootadminweb.EmptyRequest) (*rootadminweb.DoLogoutResponse, error) {
+func (rootAdminWebServer RootAdminWebServer) DoLogout(ctx context.Context, request *rootadminweb.DoLogoutRequest) (*rootadminweb.DoLogoutResponse, error) {
 	localResponse, _ := RPCCall.CallFunctionDoLogoutRootAdminWeb(ctx, db, rc, request)
 	return localResponse, nil
 }

@@ -27,6 +27,10 @@ message DoLoginResponse {
   repeated DoLoginList result = 4;
 }
 
+message DoLogoutRequest {
+  string email = 1;
+}
+
 message DoLogoutResponse {
   string statuscode = 1;
   string description = 2;
@@ -34,5 +38,5 @@ message DoLogoutResponse {
 
 service RootAdminWebService {
   rpc DoLogin(DoLoginRequest) returns (DoLoginResponse);
-  rpc DoLogout(EmptyRequest) returns (DoLogoutResponse);
+  rpc DoLogout(DoLogoutRequest) returns (DoLogoutResponse);
 }

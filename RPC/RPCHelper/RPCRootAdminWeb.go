@@ -101,3 +101,24 @@ func HelperDoLoginRootAdminWeb(ctx context.Context, db *sql.DB, rc *redis.Client
 
 	return strStatus, strSession, localResponse.Result
 }
+
+func HelperDoLogoutRootAdminWeb(ctx context.Context, rc *redis.Client, incMapRequest map[string]interface{}) string {
+	strStatus := error_code.ErrorServer
+
+	//incTimeNow := modules.DoFormatDateTime("YYYY-0M-0D HH:mm:ss.S", time.Now())
+	incRequestTraceCode := modules.GetStringFromMapInterface(incMapRequest, "tracecode")
+	incRequestRemoteIP := modules.GetStringFromMapInterface(incMapRequest, "remoteip")
+	incRequestEmail := modules.GetStringFromMapInterface(incMapRequest, "email")
+
+	redisKey := "web_session_" + incRequestEmail
+	errRedis := modules.RedisDel(rc, ctx, redisKey)
+	if errRedis != nil {
+		modules.Logging(modules.Resource(), incRequestTraceCode, incRequestEmail, incRequestRemoteIP, "Failed to delete session from redis", errRedis)
+		strStatus = error_code.ErrorServer
+	} else {
+		strStatus = error_code.ErrorSuccess
+		modules.Logging(modules.Resource(), incRequestTraceCode, incRequestEmail, incRequestRemoteIP, "Logout success", nil)
+	}
+
+	return strStatus
+}

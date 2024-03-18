@@ -23,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RootAdminWebServiceClient interface {
 	DoLogin(ctx context.Context, in *DoLoginRequest, opts ...grpc.CallOption) (*DoLoginResponse, error)
-	DoLogout(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*DoLogoutResponse, error)
+	DoLogout(ctx context.Context, in *DoLogoutRequest, opts ...grpc.CallOption) (*DoLogoutResponse, error)
 }
 
 type rootAdminWebServiceClient struct {
@@ -43,7 +43,7 @@ func (c *rootAdminWebServiceClient) DoLogin(ctx context.Context, in *DoLoginRequ
 	return out, nil
 }
 
-func (c *rootAdminWebServiceClient) DoLogout(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*DoLogoutResponse, error) {
+func (c *rootAdminWebServiceClient) DoLogout(ctx context.Context, in *DoLogoutRequest, opts ...grpc.CallOption) (*DoLogoutResponse, error) {
 	out := new(DoLogoutResponse)
 	err := c.cc.Invoke(ctx, "/rootadminweb.RootAdminWebService/DoLogout", in, out, opts...)
 	if err != nil {
@@ -57,7 +57,7 @@ func (c *rootAdminWebServiceClient) DoLogout(ctx context.Context, in *EmptyReque
 // for forward compatibility
 type RootAdminWebServiceServer interface {
 	DoLogin(context.Context, *DoLoginRequest) (*DoLoginResponse, error)
-	DoLogout(context.Context, *EmptyRequest) (*DoLogoutResponse, error)
+	DoLogout(context.Context, *DoLogoutRequest) (*DoLogoutResponse, error)
 	mustEmbedUnimplementedRootAdminWebServiceServer()
 }
 
@@ -68,7 +68,7 @@ type UnimplementedRootAdminWebServiceServer struct {
 func (UnimplementedRootAdminWebServiceServer) DoLogin(context.Context, *DoLoginRequest) (*DoLoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DoLogin not implemented")
 }
-func (UnimplementedRootAdminWebServiceServer) DoLogout(context.Context, *EmptyRequest) (*DoLogoutResponse, error) {
+func (UnimplementedRootAdminWebServiceServer) DoLogout(context.Context, *DoLogoutRequest) (*DoLogoutResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DoLogout not implemented")
 }
 func (UnimplementedRootAdminWebServiceServer) mustEmbedUnimplementedRootAdminWebServiceServer() {}
@@ -103,7 +103,7 @@ func _RootAdminWebService_DoLogin_Handler(srv interface{}, ctx context.Context, 
 }
 
 func _RootAdminWebService_DoLogout_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(EmptyRequest)
+	in := new(DoLogoutRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -115,7 +115,7 @@ func _RootAdminWebService_DoLogout_Handler(srv interface{}, ctx context.Context,
 		FullMethod: "/rootadminweb.RootAdminWebService/DoLogout",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RootAdminWebServiceServer).DoLogout(ctx, req.(*EmptyRequest))
+		return srv.(RootAdminWebServiceServer).DoLogout(ctx, req.(*DoLogoutRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
