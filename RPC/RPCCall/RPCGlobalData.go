@@ -6,6 +6,7 @@ import (
 	"CanopyCore/modules"
 	"context"
 	"database/sql"
+	"time"
 )
 
 func CallFunctionGetAllCountry(ctx context.Context, db *sql.DB) (*globaldata.AllCountryResponse, error) {
@@ -65,7 +66,15 @@ func CallFunctionGetAllCountry(ctx context.Context, db *sql.DB) (*globaldata.All
 		localResponse.Description = responseDescription
 	}
 
-	localResponse.Code = responseStatus
+	localResponse.Statuscode = responseStatus
+
+	status := ""
+	if responseStatus == error_code.ErrorSuccess {
+		status = "SUCCESS"
+	} else {
+		status = "FAILED"
+	}
+	modules.SaveWebActivity(db, incTraceCode, modules.Resource(), "SERVER", strRemoteIP, modules.DoFormatDateTime("YYYY-0M-0D HH:mm:ss.S", time.Now()), "DO GET ALL COUNTRY", status)
 
 	return localResponse, nil
 }
@@ -127,7 +136,15 @@ func CallFunctionGetAllRoles(ctx context.Context, db *sql.DB) (*globaldata.AllRo
 		localResponse.Description = responseDescription
 	}
 
-	localResponse.Code = responseStatus
+	localResponse.Statuscode = responseStatus
+
+	status := ""
+	if responseStatus == error_code.ErrorSuccess {
+		status = "SUCCESS"
+	} else {
+		status = "FAILED"
+	}
+	modules.SaveWebActivity(db, incTraceCode, modules.Resource(), "SERVER", strRemoteIP, modules.DoFormatDateTime("YYYY-0M-0D HH:mm:ss.S", time.Now()), "DO GET ALL ROLES", status)
 
 	return localResponse, nil
 }

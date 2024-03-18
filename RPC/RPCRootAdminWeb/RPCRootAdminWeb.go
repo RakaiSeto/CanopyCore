@@ -2,7 +2,7 @@ package main
 
 import (
 	"CanopyCore/RPC/RPCCall"
-	globaldata "CanopyCore/grpc/globaldata"
+	rootadminweb "CanopyCore/grpc/rootadminweb"
 	"CanopyCore/modules"
 	"context"
 	"database/sql"
@@ -31,21 +31,21 @@ var connRabbit *amqp.Connection
 var chIncoming *amqp.Channel
 var srv *grpc.Server
 
-const THEPORT = "20010"
+const THEPORT = "20020"
 
-type GlobalDataServer struct {
-	globaldata.GlobalDataServiceServer
+type RootAdminWebServer struct {
+	rootadminweb.RootAdminWebServiceServer
 }
 
-var globaldataServer GlobalDataServer
+var rootAdminWebServer RootAdminWebServer
 
-func (globaldataServer GlobalDataServer) GetAllCountry(ctx context.Context, request *globaldata.EmptyRequest) (*globaldata.AllCountryResponse, error) {
-	localResponse, _ := RPCCall.CallFunctionGetAllCountry(ctx, db)
+func (rootAdminWebServer RootAdminWebServer) DoLogin(ctx context.Context, request *rootadminweb.DoLoginRequest) (*rootadminweb.DoLoginResponse, error) {
+	localResponse, _ := RPCCall.CallFunctionDoLoginRootAdminWeb(ctx, db, rc, request)
 	return localResponse, nil
 }
 
-func (globaldataServer GlobalDataServer) GetAllRole(ctx context.Context, request *globaldata.EmptyRequest) (*globaldata.AllRoleResponse, error) {
-	localResponse, _ := RPCCall.CallFunctionGetAllRoles(ctx, db)
+func (rootAdminWebServer RootAdminWebServer) DoLogout(ctx context.Context, request *rootadminweb.DoLogoutRequest) (*rootadminweb.DoLogoutResponse, error) {
+	localResponse, _ := RPCCall.CallFunctionDoLogoutRootAdminWeb(ctx, db, rc, request)
 	return localResponse, nil
 }
 
@@ -62,10 +62,10 @@ func main() {
 	db, errDB = sql.Open("postgres", psqlInfo) // db udah di defined diatas, jadi harus pake = bukan :=
 
 	if errDB != nil {
-		modules.Logging(modules.Resource(), "STARTING RPC GLOBAL DATA", "SERVER", "SERVER IP", "Postgres unconnected", errDB)
+		modules.Logging(modules.Resource(), "STARTING RPC ROOT ADMIN WEB", "SERVER", "SERVER IP", "Postgres unconnected", errDB)
 		panic(errDB)
 	} else {
-		modules.Logging(modules.Resource(), "STARTING RPC GLOBAL DATA", "SERVER", "SERVER IP", "Postgres connected", nil)
+		modules.Logging(modules.Resource(), "STARTING RPC ROOT ADMIN WEB", "SERVER", "SERVER IP", "Postgres connected", nil)
 	}
 
 	db.SetConnMaxLifetime(time.Minute * 10)
@@ -75,9 +75,9 @@ func main() {
 	defer func(db *sql.DB) {
 		err := db.Close()
 		if err != nil {
-			modules.Logging(modules.Resource(), "STARTING RPC GLOBAL DATA", "SERVER", "SERVER IP", "Failed to close Postgres", err)
+			modules.Logging(modules.Resource(), "STARTING RPC ROOT ADMIN WEB", "SERVER", "SERVER IP", "Failed to close Postgres", err)
 		} else {
-			modules.Logging(modules.Resource(), "STARTING RPC GLOBAL DATA", "SERVER", "SERVER IP", "Success to close Postgres", nil)
+			modules.Logging(modules.Resource(), "STARTING RPC ROOT ADMIN WEB", "SERVER", "SERVER IP", "Success to close Postgres", nil)
 		}
 	}(db)
 
@@ -95,10 +95,10 @@ func main() {
 		modules.MapConfig["rabbitMqPort"] + "/" +
 		modules.MapConfig["rabbitMqVHost"])
 	if errRabbit != nil {
-		modules.Logging(modules.Resource(), "STARTING RPC GLOBAL DATA", "SERVER", "SERVER IP", "RabbitMQ unconnected", errRabbit)
+		modules.Logging(modules.Resource(), "STARTING RPC ROOT ADMIN WEB", "SERVER", "SERVER IP", "RabbitMQ unconnected", errRabbit)
 		panic(errRabbit)
 	} else {
-		modules.Logging(modules.Resource(), "STARTING RPC GLOBAL DATA", "SERVER", "SERVER IP", "RabbitMQ connected", nil)
+		modules.Logging(modules.Resource(), "STARTING RPC ROOT ADMIN WEB", "SERVER", "SERVER IP", "RabbitMQ connected", nil)
 	}
 	//defer connRabbit.Close()
 
@@ -113,10 +113,10 @@ func main() {
 	cx = context.Background()
 	errRedis := rc.Ping(cx).Err()
 	if errRedis != nil {
-		modules.Logging(modules.Resource(), "STARTING RPC GLOBAL DATA", "SERVER", "SERVER IP", "Redis unconnected", errRedis)
+		modules.Logging(modules.Resource(), "STARTING RPC ROOT ADMIN WEB", "SERVER", "SERVER IP", "Redis unconnected", errRedis)
 		panic(errRedis)
 	} else {
-		modules.Logging(modules.Resource(), "STARTING RPC GLOBAL DATA", "SERVER", "SERVER IP", "Redis connected", nil)
+		modules.Logging(modules.Resource(), "STARTING RPC ROOT ADMIN WEB", "SERVER", "SERVER IP", "Redis connected", nil)
 	}
 
 	customFunc := func(p interface{}) (err error) {
@@ -135,22 +135,22 @@ func main() {
 			grpc_recovery.StreamServerInterceptor(opts...),
 		), opt1)
 
-	globaldata.RegisterGlobalDataServiceServer(srv, globaldataServer)
-	modules.Logging(modules.Resource(), "STARTING RPC TESTING", "SERVER", "SERVER IP", "RPC TESTING loaded", nil)
+	rootadminweb.RegisterRootAdminWebServiceServer(srv, rootAdminWebServer)
+	modules.Logging(modules.Resource(), "STARTING RPC ROOT ADMIN WEB", "SERVER", "SERVER IP", "RPC ROOT ADMIN WEB loaded", nil)
 
 	l, err := net.Listen("tcp", ":"+THEPORT)
 
 	status := ""
 	if err != nil {
 		status = "FAILED"
-		modules.Logging(modules.Resource(), "STARTING RPC GLOBAL DATA", "SERVER", "SERVER IP", "RPC Failed to start and listen port : "+THEPORT, err)
+		modules.Logging(modules.Resource(), "STARTING RPC ROOT ADMIN WEB", "SERVER", "SERVER IP", "RPC Failed to start and listen port : "+THEPORT, err)
 	} else {
 		status = "SUCCESS"
-		modules.Logging(modules.Resource(), "STARTING RPC GLOBAL DATA", "SERVER", "SERVER IP", "RPC Start and Listen on port : "+THEPORT, nil)
-		fmt.Println("SERVICE RPC GLOBAL DATA IS ACTIVE ON PORT " + THEPORT)
+		modules.Logging(modules.Resource(), "STARTING RPC ROOT ADMIN WEB", "SERVER", "SERVER IP", "RPC Start and Listen on port : "+THEPORT, nil)
+		fmt.Println("SERVICE RPC ROOT ADMIN WEB IS ACTIVE ON PORT " + THEPORT)
 	}
 
-	modules.SaveWebActivity(db, "STARTING RPC GLOBAL DATA", modules.Resource(), "SERVER", "SERVER IP", modules.DoFormatDateTime("YYYY-0M-0D HH:mm:ss.S", time.Now()), "STARTING RPC GLOBAL DATA", status)
+	modules.SaveWebActivity(db, "STARTING RPC ROOT ADMIN WEB", modules.Resource(), "SERVER", "SERVER IP", modules.DoFormatDateTime("YYYY-0M-0D HH:mm:ss.S", time.Now()), "STARTING RPC ROOT ADMIN WEB", status)
 
 	log.Fatal(srv.Serve(l))
 }

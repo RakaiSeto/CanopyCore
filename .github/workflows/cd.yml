@@ -50,7 +50,13 @@ jobs:
             sudo mv RPCGlobalData /canopy/app/RPCGlobalData
             sudo chmod +x /canopy/app/RPCGlobalData
             
+            cd /github/CanopyCore/RPC/RPCRootAdminWeb/
+            go build -o RPCRootAdminWeb .
+            sudo mv RPCGlobalData /canopy/app/RPCRootAdminWeb
+            sudo chmod +x /canopy/app/RPCRootAdminWeb
+            
             sudo supervisorctl restart RPC:testingRPC
             sudo supervisorctl restart RPC:RPCGlobalData
+            sudo supervisorctl restart RPC:RPCRootAdminWeb
             sudo supervisorctl restart utils:schoolScraping
             sudo supervisorctl restart API:canopyAPI
