@@ -171,7 +171,7 @@ func InitiateGlobalVariables() {
 
 func initiateOauthHandler() {
 	helper.GoogleOauthLogin = &oauth2.Config{
-		RedirectURL:  "https://apicanopy.rakaiseto.com/login/google/callback",
+		RedirectURL:  "https://api.canopyid.co/login/google/callback",
 		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
 		ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"},
